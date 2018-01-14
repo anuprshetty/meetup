@@ -13,4 +13,10 @@ class Location(models.Model):
         return f'{self.name} ({self.address})'
 
 
+class Participant(models.Model):
+    email = models.EmailField(unique=True)
+
+    def __str__(self):
+        return self.email
+
 
