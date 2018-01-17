@@ -20,3 +20,26 @@ class Participant(models.Model):
         return self.email
 
 
+# Django automatically creates a database table for each model.
+# Later we can store the instances of the model in that database table.
+class Meetup(models.Model):
+    title = models.CharField(max_length=200) # CharField() for shorter text.
+    organizer_email = models.EmailField()
+    date = models.DateField()
+    slug = models.SlugField(unique=True) # unique=True --> Django also creates an index behind the scenes for slug to make querying for slugs more efficient.
+    description = models.TextField() # TextField() for longer text.
+    # models.ImageField() is dependent on Pillow python package.
+    image = models.ImageField(upload_to='images') # Pointer or reference to the image file is stored in the image field of Meetup table in DB.
+    # One-To-Many Relationship 
+    #   - A location can have multiple meetups.
+    #   (OR)
+    #   - Multiple meetups can have single location.
+    location = models.ForeignKey(Location, on_delete=models.CASCADE)
+    # Many-To-Many Relationship
+    #   - A meetup can have multiple participants (AND) A participant can sign up for multiple meetups.
+    participants = models.ManyToManyField(Participant, blank=True)
+
+    # Overwriting __str__() method.
+    def __str__(self):
+        # Returning a formatted string.
+        return f'{self.title} - {self.slug}'
