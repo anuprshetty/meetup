@@ -37,3 +37,45 @@ def index(request):
     })
 
 
+def meetup_details(request, meetup_slug):
+    # print(meetup_slug)
+    # selected_meetup = {
+    #     'title': 'A First Meetup', 
+    #     'description': 'This is the first meetup!'
+    #     }
+    # 
+    # return render(request, 'meetups/meetup-details.html', {
+    #     'meetup_title': selected_meetup['title'],
+    #     'meetup_desciption': selected_meetup['description']
+    # })
+
+    try:
+        selected_meetup = Meetup.objects.get(slug=meetup_slug)
+        if request.method == 'GET':
+            registration_form = RegistrationForm()
+
+        # POST method/request
+        else:
+            # request object has POST property which contains POST request data (In this case, submitted form data).
+            # registration_form contains user input + potential validation errors detected by Django.
+            registration_form = RegistrationForm(request.POST)
+            if registration_form.is_valid():
+                # participant = registration_form.save()
+                user_email = registration_form.cleaned_data['email']
+                participant, was_created = Participant.objects.get_or_create(email=user_email) # was_created flag tells whether a new participant entry was created or not.
+                selected_meetup.participants.add(participant)
+                return redirect('confirm-registration', meetup_slug=meetup_slug)
+
+        return render(request, 'meetups/meetup-details.html', {
+                'meetup_found': True,
+                # 'meetup_title': selected_meetup.title,
+                # 'meetup_desciption': selected_meetup.description,
+                'meetup': selected_meetup,
+                'form': registration_form
+            })
+    except Exception as exc:
+        return render(request, 'meetups/meetup-details.html', {
+            'meetup_found': False
+        })
+
+
