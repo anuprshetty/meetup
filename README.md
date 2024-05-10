@@ -38,7 +38,7 @@ Meetup - a web application.
 - Pillow supports a large number of image file formats including BMP, PNG, JPEG, and TIFF. The library encourages adding support for newer formats in the library by creating new file decoders.
 - models.ImageField() in django.db is dependent on Pillow python package.
 
-## SQLite
+### SQLite
 
 - SQLite is a relational database management system contained in a C library.
 - In contrast to many other database management systems, SQLite is not a client–server database engine. Rather, it is a standalone database engine.
